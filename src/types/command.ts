@@ -84,7 +84,6 @@ export interface SlashCommandConfig {
     | SlashCommandStringOptionConfig
     | SlashCommandNumberOptionConfig
   )[]
-  nsfw?: boolean
   category?: string
   usage?: string
   /**

@@ -37,3 +37,7 @@ node_modules/
 dist/
 
 .vscode/
+
+# Alternative package manager setup files
+tsup.config.ts
+nodemon.json

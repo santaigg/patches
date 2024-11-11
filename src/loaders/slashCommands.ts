@@ -108,7 +108,6 @@ function buildSlashCommand(
     )
   commandBuilder.setDescription(commandConfig.description)
   commandBuilder.setDefaultMemberPermissions(commandData.permissions)
-  commandBuilder.setNSFW(commandConfig.nsfw ?? false)
 
   if (commandConfig.options) {
     addCommandOptions(commandBuilder, commandConfig.options)

@@ -10,6 +10,7 @@ The official Discord bot from SantaiGG.
 
 1. Clone the repository
 2. Install [Bun](https://bun.sh) if you haven't already
+  > Note: Bun is recommended over npm/yarn for this project but you can also use npm/yarn/pnpm
 3. Run `bun install` to install dependencies
 4. Copy `.env.example` to `.env` and fill in the values
 5. Run `bun dev` to start the bot in development mode
@@ -55,7 +56,6 @@ The `config` of the command contains all the information about the command that 
 | description | `string`         | Yes      | The description of the command.                                       |
 | usage       | `string`         | No       | The usage of the command.                                             |
 | category    | `string`         | No       | The category of the command.                                          |
-| nsfw        | `boolean`        | No       | Whether this command is NSFW or not (Default: false).                 |
 | options     | `Array<Options>` | No       | The list of options for this command. (see [](/#options))             |
 
 > [!IMPORTANT]
@@ -119,3 +119,71 @@ See the [DiscordJS documentation](https://old.discordjs.dev/#/docs/discord.js/ma
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+### Using NPM/Yarn/PNPM Instead of Bun
+
+If you prefer using NPM, Yarn, or PNPM, you'll need to make a few adjustments since this project is optimized for Bun:
+
+> [!IMPORTANT]
+> These changes are for local development only. Please don't commit changes to package.json that remove Bun support.
+
+1. Install additional dependencies:
+```bash
+# Using npm
+npm install -D tsx tsup nodemon cross-env dotenv
+
+# Using yarn
+yarn add -D tsx tsup nodemon cross-env dotenv
+
+# Using pnpm
+pnpm add -D tsx tsup nodemon cross-env dotenv
+```
+
+2. Temporarily modify your `package.json` scripts (but don't commit these changes):
+```json
+{
+  "scripts": {
+    "dev": "nodemon",
+    "build": "tsup",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "format": "prettier --write ."
+  }
+}
+```
+
+3. Create a `nodemon.json` file in the root directory:
+```json
+{
+  "watch": ["src"],
+  "ext": ".ts,.js",
+  "ignore": [],
+  "exec": "tsx src/index.ts"
+}
+```
+
+4. Create a `tsup.config.ts` file in the root directory:
+```ts
+import { defineConfig } from 'tsup';
+
+export default defineConfig({
+  entry: ['src/index.ts'],
+  format: ['esm'],
+  clean: true,
+  minify: true,
+  target: 'node18',
+});
+```
+
+5. Add `dotenv.config()` to the top of your `src/index.ts` file:
+```ts
+import 'dotenv/config';
+// ... rest of your code
+```
+
+Now you can use the equivalent commands:
+- `npm run dev` / `yarn dev` / `pnpm dev`
+- `npm run build` / `yarn build` / `pnpm build`
+- `npm run start` / `yarn start` / `pnpm start`
+
+> [!NOTE]
+> While these alternative setups will work, we recommend using Bun for the best development experience with this project.
