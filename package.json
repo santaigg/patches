@@ -1,0 +1,27 @@
+{
+  "name": "patches-santaigg",
+  "description": "Patches Discord Bot for SantaIGG",
+  "version": "1.0.0",
+  "license": "",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "build": "bun build ./src/index.ts --outdir ./dist --target node",
+    "start": "NODE_ENV=production bun ./dist/index.js",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "chalk": "4.1.2",
+    "discord.js": "^14.16.3",
+    "fs-extra": "^11.2.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.11.20",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
+  }
+}
