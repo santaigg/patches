@@ -37,19 +37,14 @@ export function handleEvents() {
       }
 
       try {
-        const rawModule = await import(`../events/${dir}/${file}`)
-        const eventModule = rawModule.default?.default
-          ? rawModule.default
-          : rawModule
-
+        const eventModule = await import(`../events/${dir}/${file}`)
+        
         if (!eventModule.default) {
           throw new Error(`Missing default export in '${file}'`)
         }
-        const eventFunction: (...args: any[]) => Awaitable<void> =
-          eventModule.default
-
-        // @ts-expect-error Events contains all client events so this is fine
-        client.on(Events[eventName], eventFunction)
+        
+        const eventFunction: (...args: any[]) => Awaitable<void> = eventModule.default
+        client.on(eventName, eventFunction)
         ++loadedEvents
       } catch (err: any) {
         Logger.error(`Failed to load event '${eventName}': \n\t${err}`)

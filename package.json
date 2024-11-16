@@ -7,8 +7,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "build": "bun build ./src/index.ts --outdir ./dist --target node",
-    "start": "NODE_ENV=production bun ./dist/index.js",
+    "start": "NODE_ENV=production bun src/index.ts",
     "format": "prettier --write ."
   },
   "dependencies": {

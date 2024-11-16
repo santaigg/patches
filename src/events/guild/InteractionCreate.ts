@@ -39,12 +39,8 @@ async function executeSlashCommand(
       return
     }
 
-    const rawModule = await import(
-      `../../commands/slash/${commandConfig.fileName}`
-    )
-    const { command }: { command: SlashCommand } = (
-      rawModule.default?.default ? rawModule.default : rawModule
-    ).default
+    const commandModule = await import(`../../commands/slash/${commandConfig.fileName}`)
+    const { command }: { command: SlashCommand } = commandModule.default
     await command.execute(interaction)
   } catch (error) {
     Logger.error(`Error executing slash command "${commandName}": \n\t${error}`)
