@@ -8,9 +8,12 @@ import { Logger } from "@/lib/logger"
  * Application command event
  */
 export default async (interaction: Interaction<CacheType>) => {
+  Logger.debug(`Received interaction: ${interaction.type}`)
+  
   if (!interaction.isCommand()) return
-
+  
   const { commandName } = interaction
+  Logger.debug(`Executing command: ${commandName}`)
 
   await executeSlashCommand(commandName, interaction)
 }
@@ -39,8 +42,15 @@ async function executeSlashCommand(
       return
     }
 
+    Logger.debug(`Loading command module: ${commandConfig.fileName}`)
     const commandModule = await import(`../../commands/slash/${commandConfig.fileName}`)
+    
+    if (!commandModule.default?.command) {
+      throw new Error('Invalid command module structure')
+    }
+    
     const { command }: { command: SlashCommand } = commandModule.default
+    Logger.debug(`Executing command handler for: ${commandName}`)
     await command.execute(interaction)
   } catch (error) {
     Logger.error(`Error executing slash command "${commandName}": \n\t${error}`)
