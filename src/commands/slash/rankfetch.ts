@@ -4,6 +4,7 @@ import { EmbedBuilder } from "discord.js"
 import rankMapping from "./rankMapping.json" // Import the rankMapping JSON
 
 const config: SlashCommandConfig = {
+  name: "get_rank",
   description: "Fetch the game ranks for a specific player",
   usage: "/get_rank",
   options: [
