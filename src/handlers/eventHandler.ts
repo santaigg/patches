@@ -15,6 +15,7 @@ const eventsSubdirectories = ["client", "guild"] as const
  * Only `.ts` files are loaded and files starting with an underscode (`_`) are ignored.
  */
 export function handleEvents() {
+  Logger.debug("Loading events...")
   const client = DiscordClient.getInstance()
 
   const loadEvents = async (dir: string) => {
@@ -37,18 +38,14 @@ export function handleEvents() {
       }
 
       try {
-        const rawModule = await import(`../events/${dir}/${file}`)
-        const eventModule = rawModule.default?.default
-          ? rawModule.default
-          : rawModule
-
+        const eventModule = await import(`../events/${dir}/${file}`)
+        
         if (!eventModule.default) {
           throw new Error(`Missing default export in '${file}'`)
         }
-        const eventFunction: (...args: any[]) => Awaitable<void> =
-          eventModule.default
-
-        // @ts-expect-error Events contains all client events so this is fine
+        
+        const eventFunction: (...args: any[]) => Awaitable<void> = eventModule.default
+        // @ts-expect-error: TODO: Figure out why ts is erroring here
         client.on(Events[eventName], eventFunction)
         ++loadedEvents
       } catch (err: any) {

@@ -8,7 +8,9 @@ import { Logger } from "@/lib/logger"
 import { env } from "./env"
 
 const client = DiscordClient.getInstance({
-  intents: [GatewayIntentBits.Guilds],
+  intents: [
+    GatewayIntentBits.Guilds
+  ],
 })
 
 // Refresh application slash commands

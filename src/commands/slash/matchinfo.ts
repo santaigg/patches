@@ -17,6 +17,7 @@ function calculateKD(kills: number, deaths: number): string {
 }
 
 const config: SlashCommandConfig = {
+    name: "matchinfo",
     description: "Fetch the match details and team lineup.",
     usage: "/matchinfo",
     options: [

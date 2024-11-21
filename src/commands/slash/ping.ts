@@ -1,6 +1,7 @@
 import { SlashCommand, SlashCommandConfig } from "@/types/command"
 
 const config: SlashCommandConfig = {
+  name: "ping",
   description: "Show the latency of the bot",
   usage: "/ping",
   options: [
