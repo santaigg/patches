@@ -115,7 +115,7 @@ const command: SlashCommand = {
                 .setImage(mapImageUrl || "")
                 .setFooter({
                     text: "Match details powered by Santai.GG",
-                    iconURL: "https://santai.gg/_image?href=%2F_astro%2Frank-solo.D7oR61ZY.svg&f=svg"
+                    iconURL: "https://barronbucket.nyc3.digitaloceanspaces.com/screenshot/85729/Spectre_Divide_Puck_White.png"
                 })
                 .setTimestamp();
                 await interaction.editReply({ embeds: [embed] })

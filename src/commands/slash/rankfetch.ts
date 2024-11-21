@@ -51,7 +51,7 @@ const command: SlashCommand = {
         )
         .setFooter({
           text: "Rank data provided by Spectre Divide Bot",
-          iconURL: "https://santai.gg/favicon.svg",
+          iconURL: "https://barronbucket.nyc3.digitaloceanspaces.com/screenshot/85729/Spectre_Divide_Puck_White.png",
         })
         .setTimestamp();
 
