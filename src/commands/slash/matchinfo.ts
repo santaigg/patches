@@ -67,8 +67,6 @@ const command: SlashCommand = {
                 return;
             }
 
-            // Log for debugging: check the player data for each team
-            console.log("Team Data:", teams);
 
             // Prepare data for teams and their players
             const getTeamData = (team: any[]) => {
@@ -109,22 +107,19 @@ const command: SlashCommand = {
                 .setColor("#0099ff")
                 .setTitle(`Match Info for Match ID: ${matchId}`)
                 .addFields(
-                    { name: "Game Mode", value: gameMode, inline: false },
-                    { name: "Region", value: region, inline: false },
-                    { name: "Team 1", value: team1List, inline: true },
-                    { name: "Team 2", value: team2List, inline: true },
-                );
-
-            // Only set image if a valid URL exists
-            if (mapImageUrl) {
-                embed.setImage(mapImageUrl);
-            }
-
-            embed.setTimestamp()
-                .setFooter({ text: "Spectre Divide Bot", iconURL: "https://i.imgur.com/wSTFkRM.png" });
-
-            // Send the embed with the match info
-            await interaction.editReply({ embeds: [embed] });
+                    { name: "🕹️ Game Mode", value: gameMode, inline: true },
+                    { name: "🌎 Region", value: region, inline: true },
+                    { name: "🗺️ Map", value: normalizedMapName, inline: true },
+                    { name: "👥 Team 1 (Blue Team)", value: team1List || "No players found", inline: true },
+                    { name: "👥 Team 2 (Red Team)", value: team2List || "No players found", inline: true }
+                )
+                .setImage(mapImageUrl || "")
+                .setFooter({
+                    text: "Match details powered by Santai.GG",
+                    iconURL: "https://barronbucket.nyc3.digitaloceanspaces.com/screenshot/85729/Spectre_Divide_Puck_White.png"
+                })
+                .setTimestamp();
+                await interaction.editReply({ embeds: [embed] })
         } catch (error) {
             console.error(`Failed to fetch match details for match ${matchId}:`, error);
             await interaction.followUp(`🚧 There was an error fetching the match details for match ${matchId}. 🚧`);

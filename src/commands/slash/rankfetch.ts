@@ -6,11 +6,11 @@ import rankMapping from "./rankMapping.json" // Import the rankMapping JSON
 const config: SlashCommandConfig = {
   name: "get_rank",
   description: "Fetch the game ranks for a specific player",
-  usage: "/get_rank",
+  usage: "/rank",
   options: [
     {
       name: "playerid",
-      description: "The ID of the player",
+      description: "Get The Rank of a plyer through ID of the player",
       type: "STRING",
       required: true,
     },
@@ -47,13 +47,15 @@ const command: SlashCommand = {
         .setTitle(`Player ${playerId} Game Ranks`)
         .setDescription(`Here are the ranks for player ${playerId}:`)
         .addFields(
-          { name: "Solo Rank", value: soloRank, inline: true },
-          { name: "Team Rank", value: teamRank, inline: true }
+          { name: "🎯 Solo Rank", value: soloRank || "N/A", inline: true },
+          { name: "🤝 Team Rank", value: teamRank || "N/A", inline: true }
         )
-        .setTimestamp()
-        .setFooter({ text: "Spectre Divide Bot", iconURL: "https://i.imgur.com/wSTFkRM.png" })
+        .setFooter({
+          text: "Rank data provided by Spectre Divide Bot",
+          iconURL: "https://barronbucket.nyc3.digitaloceanspaces.com/screenshot/85729/Spectre_Divide_Puck_White.png",
+        })
+        .setTimestamp();
 
-      // Send the embed
       await interaction.editReply({ embeds: [embed] })
     } catch (error) {
       console.error(`Failed to fetch ranks for player ${playerId}:`, error)
