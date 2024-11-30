@@ -1,6 +1,7 @@
 import { SlashCommand, SlashCommandConfig } from "@/types/command";
 import axios from "axios";
 import { EmbedBuilder } from "discord.js";
+import rankMapping from "./rankMapping.json"
 
 function calculateKD(kills: number, deaths: number): string {
     if (kills === 0 && deaths === 0) {
@@ -16,6 +17,35 @@ function calculateKD(kills: number, deaths: number): string {
     return (kills / deaths).toFixed(2);
 }
 
+function calculateAverageRank(team: any[]): string {
+    const totalRank = team.reduce((sum: number, player: any) => {
+        const rankId = player.current_rank_id;
+        return sum + (rankId ? rankId : 0); // Summing up the rank IDs
+    }, 0);
+    
+    const averageRankId = Math.round(totalRank / team.length); // Calculate average rank
+    const rankData = rankMapping[averageRankId]; // Lookup average rank in rankMapping
+    return rankData ? `${rankData.emoji} ${rankData.name}` : "Unknown Rank"; // Return the emoji and name
+}
+
+function calculateMVP(team: any[]): { name: string; kills: number; deaths: number; kd: string } | null {
+    if (!team || team.length === 0) return null;
+
+    return team.reduce((mvp, player) => {
+        if (
+            player.num_kills > mvp.kills ||
+            (player.num_kills === mvp.kills && parseFloat(calculateKD(player.num_kills, player.num_deaths)) > parseFloat(mvp.kd))
+        ) {
+            return {
+                name: player.saved_player_name,
+                kills: player.num_kills,
+                deaths: player.num_deaths,
+                kd: calculateKD(player.num_kills, player.num_deaths),
+            };
+        }
+        return mvp;
+    }, { name: '', kills: 0, deaths: 0, kd: '0.00' });
+}
 const config: SlashCommandConfig = {
     description: "Fetch the match details and team lineup.",
     usage: "/matchinfo",
@@ -69,29 +99,42 @@ const command: SlashCommand = {
 
             // Prepare data for teams and their players
             const getTeamData = (team: any[]) => {
+                const mvp = calculateMVP(team); // Find the MVP
                 return team.map((player: any) => {
                     const kills = player.num_kills || 0;
                     const deaths = player.num_deaths || 0;
                     const kd = calculateKD(kills, deaths); // Pre-calculate K/D ratio
-
-                    // Log player stats for debugging
-                    console.log(`Player: ${player.saved_player_name}, Kills: ${kills}, Deaths: ${deaths}, K/D: ${kd}`);
-
+                    const rankId = player.current_rank_id; // Get the current rank ID
+                    const rankData = rankMapping[rankId]; // Look up the rank in rankMapping.json
+                    const rankName = rankData ? rankData.name : "Unknown"; // Default to "Unknown" if no rank found
+                    const rankEmoji = rankData ? rankData.emoji : "";
+                    console.log(`${player.saved_player_name}'s currentRankId: ${rankId} - Rank: ${rankName} ${rankEmoji}`);
+            
+                    // Add ✪ in front of the MVP's name
+                    const name = mvp && player.saved_player_name === mvp.name
+                        ? `✪ ${player.saved_player_name} - ${rankEmoji}`
+                        : `${player.saved_player_name} - ${rankEmoji}`;
+            
                     return {
-                        name: player.saved_player_name,
+                        name,
                         kills,
                         deaths,
                         kd,
                     };
+
+                    
                 });
             };
-
             const team1 = getTeamData(teams[0]?.players || []);
             const team2 = getTeamData(teams[1]?.players || []);
-
             // Format the team data for display, including K/D below the names
-            const team1List = team1.length > 0 ? team1.map((player: any) => `> ${player.name}\n↳ K/D: ${player.kd}`).join("\n\n") : "No players found";
-            const team2List = team2.length > 0 ? team2.map((player: any) => `> ${player.name}\n↳ K/D: ${player.kd}`).join("\n\n") : "No players found";
+            const team1List = team1.length > 0
+                ? team1.map((player: any) => `> ${player.name}\n↳ K/D: ${player.kd}`).join("\n\n")
+                : "No players found";
+
+            const team2List = team2.length > 0
+                ? team2.map((player: any) => `> ${player.name}\n↳ K/D: ${player.kd}`).join("\n\n")
+                : "No players found";
 
             // Get the game mode, map, and region, with a default fallback
             const gameMode = match.queue_game_mode || "Unknown Game Mode";

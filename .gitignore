@@ -42,3 +42,4 @@ dist/
 tsup.config.ts
 nodemon.json
 package-lock.json
+src/commands/slash/news.ts
