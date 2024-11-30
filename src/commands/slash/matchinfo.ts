@@ -47,6 +47,7 @@ function calculateMVP(team: any[]): { name: string; kills: number; deaths: numbe
     }, { name: '', kills: 0, deaths: 0, kd: '0.00' });
 }
 const config: SlashCommandConfig = {
+    name: "matchinfo",
     description: "Fetch the match details and team lineup.",
     usage: "/matchinfo",
     options: [

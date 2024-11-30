@@ -15,7 +15,7 @@ import { Logger } from "@/lib/logger"
 
 const SLASH_DIR = path.join(__dirname, "../commands/slash")
 const IS_DEV = env.NODE_ENV !== "production"
-const FILE_EXT = IS_DEV ? ".ts" : ".js"
+const FILE_EXT =  ".ts"
 
 /**
  * Loads all slash commands from the slash folder
@@ -28,24 +28,51 @@ export async function loadSlashCommands() {
   const slashDirFiles = await fs.readdir(SLASH_DIR, {
     recursive: true,
   })
+
+  // Debug: Log all files found
+  Logger.debug(`Found files in slash directory: ${JSON.stringify(slashDirFiles)}`)
+
   const slashCommandFiles = slashDirFiles
     .map((file) => file.toString())
     .filter((file) => {
       return file.endsWith(FILE_EXT)
     })
 
+
+  // Debug: Log filtered command files
+  Logger.debug(`Filtered command files: ${JSON.stringify(slashCommandFiles)}`)
+
   for (const scFile of slashCommandFiles) {
     const fileBasename = path.basename(scFile, FILE_EXT)
     const fileDirectory = path.dirname(scFile).replaceAll(path.sep, "/")
 
+
+    // Debug: Log current file being processed
+    Logger.debug(`Processing command file: ${fileBasename}`)
+
     try {
       // Import the module to check if it exists and has a default export
-      const rawModule = await import(`../commands/slash/${scFile}`)
+      // Debug: Log import path
+      const importPath = `../commands/slash/${scFile}`
+      Logger.debug(`Attempting to import from: ${importPath}`)
+
+      const rawModule = await import(importPath)
+
+      // Debug: Log module structure
+      Logger.debug(`Module contents: ${JSON.stringify(Object.keys(rawModule))}`)
+      
       const commandModule = rawModule.default?.default
         ? rawModule.default
         : rawModule
 
-      if (!commandModule.default) continue
+      // Debug: Log command module structure
+      Logger.debug(`Command module structure: ${JSON.stringify(Object.keys(commandModule))}`)
+
+      if (!commandModule.default) {
+        Logger.error(`Missing default export in slash command "${fileBasename}"`)
+        continue
+      }
+
       const {
         command,
         config,
