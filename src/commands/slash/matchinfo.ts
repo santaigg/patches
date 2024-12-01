@@ -62,9 +62,9 @@ const config: SlashCommandConfig = {
 
 const mapImages: { [key: string]: string } = {
     Commons: 'https://santai.gg/images/map-previews/Commons_800x800.webp',
-    Metro_P: 'https://santai.gg/images/map-previews/Metro_800x800.webp',
-    Junction_P: 'https://santai.gg/images/map-previews/Skyway_800x800.webp',
-    Greenbelt_P: 'https://santai.gg/images/map-previews/Mill_800x800.webp',
+    Metro: 'https://santai.gg/images/map-previews/Metro_800x800.webp',
+    Junction: 'https://santai.gg/images/map-previews/Skyway_800x800.webp',
+    Greenbelt: 'https://santai.gg/images/map-previews/Mill_800x800.webp',
 };
 
 const command: SlashCommand = {
