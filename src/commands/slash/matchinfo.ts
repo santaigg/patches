@@ -24,7 +24,7 @@ function calculateAverageRank(team: any[]): string {
     }, 0);
     
     const averageRankId = Math.round(totalRank / team.length); // Calculate average rank
-    const rankData = rankMapping[averageRankId]; // Lookup average rank in rankMapping
+    const rankData = rankMapping[averageRankId.toString() as keyof typeof rankMapping]; // Lookup average rank in rankMapping
     return rankData ? `${rankData.emoji} ${rankData.name}` : "Unknown Rank"; // Return the emoji and name
 }
 
@@ -60,11 +60,11 @@ const config: SlashCommandConfig = {
     ],
 };
 
-const mapImages = {
-    Commons: 'https://media.discordapp.net/attachments/1134593601427476561/1280601517325291592/LoadingScreen_Commons.png',
-    Metro_P: 'https://media.discordapp.net/attachments/1134593601427476561/1269354484673282109/metro-4k.png',
-    Junction_P: 'https://media.discordapp.net/attachments/1134593601427476561/1269354324430159912/skyway-4k.png',
-    Greenbelt_P: 'https://media.discordapp.net/attachments/1134593601427476561/1269354223233929287/mill-4k.png',
+const mapImages: { [key: string]: string } = {
+    Commons: 'https://santai.gg/images/map-previews/Commons_800x800.webp',
+    Metro: 'https://santai.gg/images/map-previews/Metro_800x800.webp',
+    Junction: 'https://santai.gg/images/map-previews/Skyway_800x800.webp',
+    Greenbelt: 'https://santai.gg/images/map-previews/Mill_800x800.webp',
 };
 
 const command: SlashCommand = {
@@ -106,7 +106,7 @@ const command: SlashCommand = {
                     const deaths = player.num_deaths || 0;
                     const kd = calculateKD(kills, deaths); // Pre-calculate K/D ratio
                     const rankId = player.current_rank_id; // Get the current rank ID
-                    const rankData = rankMapping[rankId]; // Look up the rank in rankMapping.json
+                    const rankData = rankMapping[rankId.toString() as keyof typeof rankMapping]; // Look up the rank in rankMapping.json
                     const rankName = rankData ? rankData.name : "Unknown"; // Default to "Unknown" if no rank found
                     const rankEmoji = rankData ? rankData.emoji : "";
                     console.log(`${player.saved_player_name}'s currentRankId: ${rankId} - Rank: ${rankName} ${rankEmoji}`);
